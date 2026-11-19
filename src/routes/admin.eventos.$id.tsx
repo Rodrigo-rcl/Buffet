@@ -55,7 +55,6 @@ import {
 import {
   caminhoDoConvite,
   caminhoDoLoginDoOrcamento,
-  VALIDADE_CONVITE_TEXTO,
 } from "@/lib/acesso-cliente";
 import { useConfirmar } from "@/lib/confirmacao";
 import { formatBRL, formatDate, formatTimeRange } from "@/lib/format";
@@ -442,9 +441,9 @@ function EnviarOrcamentoAoCliente({
       await enviar({ data: { id: orcamento.id } });
       if (whatsapp) {
         // Cliente sem conta não tem senha para usar: recebe o link para criar o acesso.
-        const comoAcessar = evento.cliente.usuarioId
-          ? `Para ver o cardápio completo e aprovar, entre com a sua senha: ${window.location.origin}${caminhoDoLoginDoOrcamento(orcamento.id, evento.cliente.email)}`
-          : `Para ver o cardápio completo e aprovar, crie sua senha neste link (vale por ${VALIDADE_CONVITE_TEXTO} e só uma vez): ${window.location.origin}${caminhoDoConvite((await gerarConvite({ data: { clienteId: evento.cliente.id } })).token)}`;
+        const caminhoAcesso = evento.cliente.usuarioId
+          ? caminhoDoLoginDoOrcamento(orcamento.id, evento.cliente.email)
+          : caminhoDoConvite((await gerarConvite({ data: { clienteId: evento.cliente.id } })).token);
         const mensagem = mensagemEnvioOrcamento({
           nomeCliente: evento.cliente.nome,
           tipoEvento: evento.tipo,
@@ -454,7 +453,7 @@ function EnviarOrcamentoAoCliente({
           frete: orcamento.itens
             .filter((item) => ehFrete(item.unidade))
             .reduce((soma, item) => soma + Number(item.valorTotal), 0),
-          comoAcessar,
+          urlAcesso: `${window.location.origin}${caminhoAcesso}`,
         });
         const url = createWhatsAppUrl(whatsapp, mensagem);
         if (janela) {

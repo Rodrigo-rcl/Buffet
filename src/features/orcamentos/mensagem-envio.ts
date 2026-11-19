@@ -11,7 +11,7 @@ export function mensagemEnvioOrcamento(dados: {
   convidados: number;
   total: number;
   frete: number;
-  comoAcessar: string;
+  urlAcesso: string;
 }): string {
   const primeiroNome = dados.nomeCliente.trim().split(/\s+/)[0] ?? "";
   const convidados = `${dados.convidados} ${dados.convidados === 1 ? "convidado" : "convidados"}`;
@@ -23,7 +23,8 @@ export function mensagemEnvioOrcamento(dados: {
     `Olá, ${primeiroNome}! Seu orçamento está pronto 🎉`,
     `${dados.tipoEvento} · ${dados.data} · ${convidados}`,
     valor,
-    dados.comoAcessar,
-    "Qualquer dúvida, é só responder esta mensagem.",
+    "Para visualizar todos os detalhes do orçamento, acesse:",
+    dados.urlAcesso,
+    "Caso queira alterar algum item do cardápio ou solicitar alguma modificação, responda esta mensagem ou fale conosco pelo WhatsApp",
   ].join("\n\n");
 }
